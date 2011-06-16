@@ -66,8 +66,10 @@ public class PreencheBanco {
 
 	private Estabelecimento criaEstabelecimento() {
 		Estabelecimento estabelecimento = new Estabelecimento();
-		estabelecimento.setNome("Casa de shows");
-		estabelecimento.setEndereco("Rua dos Silveiras, 12345");
+		String nomeEstabelecimento = "Casa de shows";
+		String enderecoEstabelecimento = "Rua dos Silveiras, 12345";
+		estabelecimento.setNome(nomeEstabelecimento);
+		estabelecimento.setEndereco(enderecoEstabelecimento);
 		manager.persist(estabelecimento);
 		return estabelecimento;
 	}
