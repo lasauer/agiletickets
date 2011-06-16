@@ -3,7 +3,6 @@ package br.com.caelum.agiletickets;
 import javax.persistence.EntityManager;
 
 import org.joda.time.DateTime;
-
 import br.com.caelum.agiletickets.models.Espetaculo;
 import br.com.caelum.agiletickets.models.Estabelecimento;
 import br.com.caelum.agiletickets.models.Sessao;
@@ -12,31 +11,39 @@ import br.com.caelum.vraptor.util.jpa.EntityManagerCreator;
 import br.com.caelum.vraptor.util.jpa.EntityManagerFactoryCreator;
 
 public class PreencheBanco {
+	
+	private final EntityManager manager;
+	
+	public PreencheBanco () {
+		EntityManagerFactoryCreator creator= new EntityManagerFactoryCreator();
+		creator.create();
+		EntityManagerCreator managerCreator= new EntityManagerCreator(creator.getInstance());
+		managerCreator.create();
+		manager = managerCreator.getInstance();
+		
+	}
 
 	public static void main(String[] args) {
-		EntityManagerFactoryCreator creator = new EntityManagerFactoryCreator();
-		creator.create();
-		EntityManagerCreator managerCreator = new EntityManagerCreator(creator.getInstance());
-		managerCreator.create();
-		EntityManager manager = managerCreator.getInstance();
+		PreencheBanco preencheBanco = new PreencheBanco();
+		preencheBanco.inicializaBanco();
+	}
 
+	private void inicializaBanco() {
 		manager.getTransaction().begin();
-		manager.createQuery("delete from Sessao").executeUpdate();
-		manager.createQuery("delete from Espetaculo").executeUpdate();
-		manager.createQuery("delete from Estabelecimento").executeUpdate();
-		Estabelecimento estabelecimento = new Estabelecimento();
-		estabelecimento.setNome("Casa de shows");
-		estabelecimento.setEndereco("Rua dos Silveiras, 12345");
+		limpaBanco();
 
-		Espetaculo espetaculo = new Espetaculo();
-		espetaculo.setEstabelecimento(estabelecimento);
-		espetaculo.setNome("Depeche Mode");
-		espetaculo.setTipo(TipoDeEspetaculo.SHOW);
+		Estabelecimento estabelecimento = criaEstabelecimento();
 
-		manager.persist(estabelecimento);
-		manager.persist(espetaculo);
+		Espetaculo espetaculo = criaEspetaculo(estabelecimento);
+		
+		criaSessoes(espetaculo, 10);
+		
+		manager.getTransaction().commit();
+		manager.close();
+	}
 
-		for (int i = 0; i < 10; i++) {
+	private void criaSessoes(Espetaculo espetaculo, int numeroSessoes) {
+		for (int i = 0; i < numeroSessoes; i++) {
 			Sessao sessao = new Sessao();
 			sessao.setEspetaculo(espetaculo);
 			sessao.setInicio(new DateTime().plusDays(7+i));
@@ -45,8 +52,28 @@ public class PreencheBanco {
 			sessao.setIngressosReservados(10 - i);
 			manager.persist(sessao);
 		}
+	}
 
-		manager.getTransaction().commit();
-		manager.close();
+	private Espetaculo criaEspetaculo(Estabelecimento estabelecimento) {
+		Espetaculo espetaculo = new Espetaculo();
+		espetaculo.setEstabelecimento(estabelecimento);
+		espetaculo.setNome("Depeche Mode");
+		espetaculo.setTipo(TipoDeEspetaculo.SHOW);
+		manager.persist(espetaculo);
+		return espetaculo;
+	}
+
+	private Estabelecimento criaEstabelecimento() {
+		Estabelecimento estabelecimento = new Estabelecimento();
+		estabelecimento.setNome("Casa de shows");
+		estabelecimento.setEndereco("Rua dos Silveiras, 12345");
+		manager.persist(estabelecimento);
+		return estabelecimento;
+	}
+
+	private void limpaBanco() {
+		manager.createQuery("delete from Sessao").executeUpdate();
+		manager.createQuery("delete from Espetaculo").executeUpdate();
+		manager.createQuery("delete from Estabelecimento").executeUpdate();
 	}
 }
