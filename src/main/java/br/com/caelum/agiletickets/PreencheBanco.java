@@ -34,7 +34,8 @@ public class PreencheBanco {
 
 		Estabelecimento estabelecimento = criaEstabelecimento();
 
-		Espetaculo espetaculo = criaEspetaculo(estabelecimento);
+		String nomeEspetaculo = "Depeche Mode";
+		Espetaculo espetaculo = criaEspetaculo(estabelecimento, nomeEspetaculo);
 		
 		criaSessoes(espetaculo, 10);
 		
@@ -54,10 +55,10 @@ public class PreencheBanco {
 		}
 	}
 
-	private Espetaculo criaEspetaculo(Estabelecimento estabelecimento) {
+	private Espetaculo criaEspetaculo(Estabelecimento estabelecimento, String nome) {
 		Espetaculo espetaculo = new Espetaculo();
 		espetaculo.setEstabelecimento(estabelecimento);
-		espetaculo.setNome("Depeche Mode");
+		espetaculo.setNome(nome);
 		espetaculo.setTipo(TipoDeEspetaculo.SHOW);
 		manager.persist(espetaculo);
 		return espetaculo;
