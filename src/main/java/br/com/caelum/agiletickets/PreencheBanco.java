@@ -32,7 +32,9 @@ public class PreencheBanco {
 		manager.getTransaction().begin();
 		limpaBanco();
 
-		Estabelecimento estabelecimento = criaEstabelecimento();
+		String nomeEstabelecimento = "Casa de shows";
+		String enderecoEstabelecimento = "Rua dos Silveiras, 12345";
+		Estabelecimento estabelecimento = criaEstabelecimento(nomeEstabelecimento, enderecoEstabelecimento);
 
 		String nomeEspetaculo = "Depeche Mode";
 		Espetaculo espetaculo = criaEspetaculo(estabelecimento, nomeEspetaculo);
@@ -64,10 +66,8 @@ public class PreencheBanco {
 		return espetaculo;
 	}
 
-	private Estabelecimento criaEstabelecimento() {
+	private Estabelecimento criaEstabelecimento(String nomeEstabelecimento, String enderecoEstabelecimento) {
 		Estabelecimento estabelecimento = new Estabelecimento();
-		String nomeEstabelecimento = "Casa de shows";
-		String enderecoEstabelecimento = "Rua dos Silveiras, 12345";
 		estabelecimento.setNome(nomeEstabelecimento);
 		estabelecimento.setEndereco(enderecoEstabelecimento);
 		manager.persist(estabelecimento);
