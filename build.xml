@@ -32,6 +32,7 @@
 		</copy>
 	</target>
 
+	<target name="sauer" depends="resolve"/>
 	<!-- ================================= 
           target: compile
          ================================= -->
