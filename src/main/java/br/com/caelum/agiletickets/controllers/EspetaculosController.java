@@ -74,26 +74,36 @@ public class EspetaculosController {
 	}
 
 	@Post @Path("/sessao/{sessaoId}/reserva")
-	public void reserva(Long sessaoId, final Integer quantidade) {
+	public void reserva(Long sessaoId, final Integer quantidade, final Integer quantidadeDeMeiasEntradas) {
 		Sessao sessao = agenda.sessao(sessaoId);
+		
+		final Integer totalDeIngressos = quantidade + quantidadeDeMeiasEntradas;
+		
 		if (sessao == null) {
 			result.notFound();
 			return;
 		}
 
-		if (quantidade < 1) {
+		if (totalDeIngressos < 1) {
 			validator.add(new ValidationMessage("Você deve escolher um lugar ou mais", ""));
 		}
 
-		if (!sessao.podeReservar(quantidade)) {
+		if (!sessao.podeReservar(totalDeIngressos)) {
 			validator.add(new ValidationMessage("Não existem ingressos disponíveis", ""));
 		}
 
 		validator.onErrorRedirectTo(this).sessao(sessao.getId());
 
-		sessao.reserva(quantidade);
+		sessao.reserva(totalDeIngressos);
 
-		BigDecimal precoTotal = sessao.getPreco().multiply(BigDecimal.valueOf(quantidade));
+		BigDecimal precoInteiras = sessao.getPreco().multiply(
+				BigDecimal.valueOf(quantidade));
+
+		BigDecimal precoMeias = sessao.getPreco()
+				.multiply(BigDecimal.valueOf(quantidadeDeMeiasEntradas))
+				.divide(BigDecimal.valueOf(2));
+
+		BigDecimal precoTotal = precoInteiras.add(precoMeias);
 
 		result.include("message", "Sessao reservada com sucesso por " + CURRENCY.format(precoTotal));
 

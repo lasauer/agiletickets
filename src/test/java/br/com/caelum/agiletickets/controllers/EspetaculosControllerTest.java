@@ -6,6 +6,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -81,7 +83,7 @@ public class EspetaculosControllerTest {
 	public void naoDeveReservarZeroIngressos() throws Exception {
 		when(agenda.sessao(1234l)).thenReturn(new Sessao());
 
-		controller.reserva(1234l, 0);
+		controller.reserva(1234l, 0, 0);
 
 		verifyZeroInteractions(result);
 	}
@@ -93,7 +95,7 @@ public class EspetaculosControllerTest {
 
 		when(agenda.sessao(1234l)).thenReturn(sessao);
 
-		controller.reserva(1234l, 5);
+		controller.reserva(1234l, 5, 0);
 
 		verifyZeroInteractions(result);
 	}
@@ -102,11 +104,25 @@ public class EspetaculosControllerTest {
 	public void deveReservarSeASessaoTemIngressosSuficientes() throws Exception {
 		Sessao sessao = new Sessao();
 		sessao.setTotalIngressos(5);
+		sessao.setPreco(BigDecimal.valueOf(10.2));
+		
+		when(agenda.sessao(1234l)).thenReturn(sessao);
+
+		controller.reserva(1234l, 3, 0);
+
+		assertThat(sessao.getIngressosDisponiveis(), is(2));
+	}
+	
+	@Test
+	public void deveReservarUmIngressoNormalEUmaMeiaSeHoveremIngressosSuficientes() throws Exception {
+		Sessao sessao = new Sessao();
+		sessao.setTotalIngressos(5);
+		sessao.setPreco(BigDecimal.valueOf(22.0));
 
 		when(agenda.sessao(1234l)).thenReturn(sessao);
 
-		controller.reserva(1234l, 3);
+		controller.reserva(1234l, 1, 1);
 
-		assertThat(sessao.getIngressosDisponiveis(), is(2));
+		assertThat(sessao.getIngressosDisponiveis(), is(3));
 	}
 }

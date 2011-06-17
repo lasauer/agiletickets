@@ -55,7 +55,7 @@ public class PreencheBanco {
 			sessao.setDuracaoEmMinutos(60 * 3);
 			sessao.setTotalIngressos(10);
 			sessao.setIngressosReservados(10 - i);
-			sessao.setPreco(new BigDecimal("12.34"));
+			sessao.setPreco(new BigDecimal("10"));
 			manager.persist(sessao);
 		}
 	}
