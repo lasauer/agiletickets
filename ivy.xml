@@ -12,7 +12,9 @@
 		<dependency org="br.com.caelum" name="vraptor" rev="3.2.0" conf="default" />
 		<dependency org="mysql" name="mysql-connector-java" rev="5.1.13"/>
 		<dependency org="opensymphony" name="sitemesh" rev="2.4.2" conf="default" />
-		<dependency org="javax.servlet" name="jstl" rev="1.2" conf="default" />
+		<!-- <dependency org="javax.servlet" name="jstl" rev="1.2" conf="default" /> -->
+		<dependency org="org.glassfish.web" name="jstl-impl" rev="1.2" conf="default" />
+		<dependency org="javax.servlet.jsp.jstl" name="jstl-api" rev="1.2" conf="default" />
 		<dependency org="org.hamcrest" name="hamcrest-all" rev="1.1" conf="default" />
 		<dependency org="org.hibernate" name="hibernate-entitymanager" rev="3.4.0.GA" conf="default" />
 		<dependency org="org.hibernate" name="hibernate-core" rev="3.3.2.GA" conf="default" />
